@@ -1,0 +1,76 @@
+# opensearch-dashboards Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ .Values.opensearch_service.opensearch_service_name }}
+  name: {{ .Values.opensearch_deployment.opensearch_dashboard_name }}
+spec:
+  replicas: {{ .Values.opensearch_deployment.opensearch_replicas }}
+  selector:
+    matchLabels:
+      service: {{ .Values.opensearch_service.opensearch_service_name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        network/opensearch-net: "true"
+        service: {{ .Values.opensearch_service.opensearch_service_name }}
+    spec:
+      containers:
+      - env:
+        - name: OPENSEARCH_HOSTS
+          value: "https://{{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}:{{ .Values.opensearch_deployment.opensearch_node1_port_1 }}"
+        image: {{ .Values.opensearch_deployment.opensearch_dashboards_image }}
+        name: {{ .Values.opensearch_deployment.opensearch_dashboard_name }}
+        ports:
+        - containerPort: {{ .Values.opensearch_deployment.opensearch_dashboards_port }}
+        resources: {}
+      restartPolicy: Always
+status: {}
+---
+# opensearch-node1 Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ .Values.opensearch_service.opensearch_service_node_name }}
+  name: {{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}
+spec:
+  replicas: {{ .Values.opensearch_deployment.opensearch_replicas }}
+  selector:
+    matchLabels:
+      service: {{ .Values.opensearch_service.opensearch_service_node_name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        network/opensearch-net: "true"
+        service: {{ .Values.opensearch_service.opensearch_service_node_name }}
+    spec:
+      containers:
+      - env:
+        - name: OPENSEARCH_JAVA_OPTS
+          value: "-Xms512m -Xmx512m"
+        - name: bootstrap.memory_lock
+          value: "true"
+        - name: cluster.initial_master_nodes
+          value: "{{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}"
+        - name: cluster.name
+          value: opensearch-cluster
+        - name: discovery.seed_hosts
+          value: "{{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}"
+        - name: node.name
+          value: "{{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}"
+        image: {{ .Values.opensearch_deployment.opensearch_node_image }}
+        name: {{ .Values.opensearch_deployment_node.opensearch_deployment_node_name }}
+        ports:
+        - containerPort: {{ .Values.opensearch_deployment.opensearch_node1_port_1 }}
+        - containerPort: {{ .Values.opensearch_deployment.opensearch_node1_port_2 }}
+        resources: {}
+      restartPolicy: Always
+status: {}
+---

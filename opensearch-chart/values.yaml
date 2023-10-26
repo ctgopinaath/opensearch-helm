@@ -1,0 +1,32 @@
+serviceAccount:
+  name: cluster-opensearch
+  namespace: default
+  rolearn: arn:aws:iam::510609485636:role/opensearch-oidc
+
+opensearch_deployment:
+  opensearch_dashboards_image: opensearchproject/opensearch-dashboards:1.0.0-rc1
+  opensearch_node_image: opensearchproject/opensearch:1.0.0-rc1
+  opensearch_replicas: 1
+  opensearch_dashboards_port: 5601
+  opensearch_node1_port_1: 9200
+  opensearch_node1_port_2: 9600
+  opensearch_dashboard_name: opensearch-dashboards
+
+opensearch_deployment_node:
+  opensearch_deployment_node_name: opensearch-node1
+
+opensearch_service:
+  opensearch_service_name: opensearch-dashboards
+  opensearch_service_protocol: http
+  opensearch_service_port: 80
+  opensearch_service_target_port: 5601
+  opensearch_service_type: LoadBalancer
+
+opensearch_service_node:
+  opensearch_service_node_name: opensearch-node1
+  opensearch_service_node_port1: 9200
+  opensearch_service_node_port2: 9600
+
+opensearch_network_policy:
+  opensearch_network_policy_name: opensearch-net
+

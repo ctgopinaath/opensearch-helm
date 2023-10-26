@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.opensearch_service.opensearch_service_name }}
+  labels:
+    service: {{ .Values.opensearch_service.opensearch_service_name }}
+spec:
+  type: {{ .Values.opensearch_service.opensearch_service_type }}
+  selector:
+    service: {{ .Values.opensearch_service.opensearch_service_name }}
+  ports:
+  - name: {{ .Values.opensearch_service.opensearch_service_protocol }}
+    port: {{ .Values.opensearch_service.opensearch_service_port }}
+    targetPort: {{ .Values.opensearch_service.opensearch_service_target_port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.opensearch_service_node.opensearch_service_node_name }}
+  labels:
+    service: {{ .Values.opensearch_service_node.opensearch_service_node_name }}
+spec:
+  ports:
+  - name: "9200"
+    port: {{ .Values.opensearch_service_node.opensearch_service_node_port1 }}
+    targetPort: {{ .Values.opensearch_service.opensearch_service_node_port1 }}
+  - name: "9600"
+    port: {{ .Values.opensearch_service_node.opensearch_service_node_port2 }}
+    targetPort: {{ .Values.opensearch_service_node.opensearch_service_node_port2 }}
+  selector:
+    service: {{ .Values.opensearch_service_node.opensearch_service_node_name }}
+status:
+  loadBalancer: {}
+---

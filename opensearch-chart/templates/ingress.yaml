@@ -1,0 +1,15 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: {{ .Values.opensearch_network_policy.opensearch_network_policy_name }}
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          network/opensearch-net: "true"
+  podSelector:
+    matchLabels:
+      network/opensearch-net: "true"
