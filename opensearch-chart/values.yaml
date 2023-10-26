@@ -4,8 +4,8 @@ serviceAccount:
   rolearn: arn:aws:iam::510609485636:role/opensearch-oidc
 
 opensearch_deployment:
-  opensearch_dashboards_image: opensearchproject/opensearch-dashboards:1.0.0-rc1
-  opensearch_node_image: opensearchproject/opensearch:1.0.0-rc1
+  opensearch_dashboards_image: opensearchproject/opensearch-dashboards:latest
+  opensearch_node_image: opensearchproject/opensearch:latest
   opensearch_replicas: 1
   opensearch_dashboards_port: 5601
   opensearch_node1_port_1: 9200
